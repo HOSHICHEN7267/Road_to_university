@@ -38,7 +38,7 @@ const _credentials = r'''
 class UschoolState extends State<Uschool>{
   int _currentIndex = 0;
 
-  final _Pages = <Widget>[
+  final _pages = <Widget>[
     UniversityPage(),
     TransportationPage(),
     SplashProfilePage(),
@@ -58,7 +58,7 @@ class UschoolState extends State<Uschool>{
     // fetch spreadsheet by its id
     final ss = await gsheets.spreadsheet(_spreadsheetId);
     // get worksheet by its title
-    final sheet = await ss.worksheetByTitle('Datas');
+    final sheet = ss.worksheetByTitle('Datas');
 
     List<SchoolData> data = new List<SchoolData>();
 
@@ -80,7 +80,7 @@ class UschoolState extends State<Uschool>{
         future: getSchoolData(),
         builder: (context, snap){
           if(!snap.hasData){
-            print('hi');
+            //print('hi');
             return Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
@@ -140,7 +140,7 @@ class UschoolState extends State<Uschool>{
               ),
             );
           }
-          print('ho');
+          //print('ho');
           List<SchoolData> schoolDatas = snap.data;
           return SingleChildScrollView(
             child: Container(
@@ -152,7 +152,7 @@ class UschoolState extends State<Uschool>{
                     padding: EdgeInsets.only(top: 125, bottom: 70),
                     //height: MediaQuery.of(context).size.height,
                     width: double.infinity,
-                    child: _ListView(context, schoolDatas),
+                    child: _listView(context, schoolDatas),
                   ),
                   Container(
                     height: 120,
@@ -203,15 +203,15 @@ class UschoolState extends State<Uschool>{
         items: [
           new BottomNavigationBarItem(
             icon: new Icon(Icons.school),
-            title: new Text('大學'),
+            label: '大學',
           ),
           new BottomNavigationBarItem(
             icon: new Icon(Icons.directions_subway),
-            title: new Text('交通'),
+            label: '交通',
           ),
           new BottomNavigationBarItem(
             icon: new Icon(Icons.person),
-            title: new Text('個人'),
+            label: '個人',
           )
         ],
       ),
@@ -223,14 +223,14 @@ class UschoolState extends State<Uschool>{
       Navigator.push(
         context,
         PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => _Pages[index],
+          pageBuilder: (context, animation1, animation2) => _pages[index],
           transitionDuration: Duration(seconds: 0),
         ),
       );
     });
   }
 
-  Widget _ListView(BuildContext context, List<SchoolData> schooldatas){
+  Widget _listView(BuildContext context, List<SchoolData> schooldatas){
     return ListView.builder(
       itemCount: schooldatas.length,
       itemBuilder: (context, index){
@@ -239,7 +239,7 @@ class UschoolState extends State<Uschool>{
             Navigator.push(
               context,
               PageRouteBuilder(
-                pageBuilder: (context, animation1, animation2) => WebUschool(index: index, SchoolName: schooldatas[index].name,),
+                pageBuilder: (context, animation1, animation2) => WebUschool(index: index, schoolName: schooldatas[index].name,),
                 transitionDuration: Duration(seconds: 0),
               ),
             );
@@ -340,15 +340,15 @@ class UschoolState extends State<Uschool>{
 }
 
 class WebUschool extends StatefulWidget{
-  int index;
-  String SchoolName;
-  WebUschool({this.index, this.SchoolName});
+  final int index;
+  final String schoolName;
+  WebUschool({this.index, this.schoolName});
 
   WebUschoolState createState() => WebUschoolState();
 }
 
 class WebUschoolState extends State<WebUschool>{
-  List<String> SchoolCode = ["001", "002", "003", "004", "005", "006", "007", "008", "009", "011",
+  List<String> schoolCode = ["001", "002", "003", "004", "005", "006", "007", "008", "009", "011",
     "012", "013", "014", "015", "016", "017", "018", "019", "020", "021",
     "022", "023", "025", "026", "027", "028", "030", "031", "032", "033",
     "034", "035", "036", "038", "039", "040", "041", "042", "043", "044",
@@ -361,10 +361,10 @@ class WebUschoolState extends State<WebUschool>{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(47, 75, 110, 1),
-        title: Text(widget.SchoolName),
+        title: Text(widget.schoolName),
       ),
       body: WebView(
-        initialUrl: 'https://university-tw.ldkrsi.men/caac/${SchoolCode[widget.index]}/#gsc.tab=0',
+        initialUrl: 'https://university-tw.ldkrsi.men/caac/${schoolCode[widget.index]}/#gsc.tab=0',
         javascriptMode: JavascriptMode.unrestricted,
       ),
     );
